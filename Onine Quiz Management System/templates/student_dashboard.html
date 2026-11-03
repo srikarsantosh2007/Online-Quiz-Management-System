@@ -1,0 +1,143 @@
+{% extends "base.html" %}
+
+{% block title %}Student Dashboard - Quiz Management System{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-md-12">
+        <div class="d-flex justify-content-between align-items-center">
+            <div>
+                <h2><i class="bi bi-speedometer2"></i> Student Dashboard</h2>
+                <p class="text-muted mb-0">Welcome back, {{ student.name }}! ({{ student.roll_number }})</p>
+            </div>
+            <div class="text-end">
+                <span class="badge bg-success fs-6">{{ student.email }}</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mb-4">
+    <div class="col-md-4">
+        <div class="card text-white" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h5 class="card-title mb-0">Available Quizzes</h5>
+                        <h2 class="display-4 fw-bold">{{ available_quizzes|length }}</h2>
+                    </div>
+                    <div class="display-1 opacity-50">
+                        <i class="bi bi-clipboard-data"></i>
+                    </div>
+                </div>
+                <a href="{{ url_for('student_quizzes') }}" class="btn btn-light btn-sm mt-3 w-100">Browse Quizzes</a>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card text-white" style="background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h5 class="card-title mb-0">Completed Attempts</h5>
+                        <h2 class="display-4 fw-bold">{{ attempts|length }}</h2>
+                    </div>
+                    <div class="display-1 opacity-50">
+                        <i class="bi bi-check-circle"></i>
+                    </div>
+                </div>
+                <a href="{{ url_for('student_attempts') }}" class="btn btn-light btn-sm mt-3 w-100">View History</a>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card text-white" style="background: linear-gradient(135deg, #2193b0 0%, #6dd5ed 100%);">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h5 class="card-title mb-0">Profile Settings</h5>
+                        <p class="mb-0">Manage your account</p>
+                    </div>
+                    <div class="display-1 opacity-50">
+                        <i class="bi bi-person"></i>
+                    </div>
+                </div>
+                <a href="{{ url_for('student_profile') }}" class="btn btn-light btn-sm mt-3 w-100">Edit Profile</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mb-4">
+    <div class="col-md-4">
+        <div class="card h-100">
+            <div class="card-header">
+                <h5 class="mb-0"><i class="bi bi-lightning"></i> Quick Actions</h5>
+            </div>
+            <div class="card-body">
+                <div class="d-grid gap-2">
+                    <a href="{{ url_for('student_quizzes') }}" class="btn btn-outline-primary">
+                        <i class="bi bi-clipboard-data"></i> Browse Quizzes
+                    </a>
+                    <a href="{{ url_for('student_attempts') }}" class="btn btn-outline-success">
+                        <i class="bi bi-clock-history"></i> View Quiz History
+                    </a>
+                    <a href="{{ url_for('student_profile') }}" class="btn btn-outline-info">
+                        <i class="bi bi-person"></i> Update Profile
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-8">
+        <div class="card h-100">
+            <div class="card-header">
+                <h5 class="mb-0"><i class="bi bi-clock-history"></i> Recent Quiz Attempts</h5>
+            </div>
+            <div class="card-body">
+                {% if attempts %}
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Quiz</th>
+                                <th>Score</th>
+                                <th>Percentage</th>
+                                <th>Date</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for attempt in attempts %}
+                            {% set percentage = (attempt.score / attempt.quiz.total_marks * 100) %}
+                            <tr>
+                                <td><strong>{{ attempt.quiz.title }}</strong></td>
+                                <td>
+                                    <span class="badge {% if percentage >= 70 %}bg-success{% elif percentage >= 50 %}bg-warning{% else %}bg-danger{% endif %}">
+                                        {{ attempt.score }}/{{ attempt.quiz.total_marks }}
+                                    </span>
+                                </td>
+                                <td>{{ "%.1f"|format(percentage) }}%</td>
+                                <td>{{ attempt.attempt_date.strftime('%Y-%m-%d') }}</td>
+                                <td>
+                                    <a href="{{ url_for('quiz_result', attempt_id=attempt.id) }}" class="btn btn-sm btn-info">
+                                        <i class="bi bi-eye"></i> View
+                                    </a>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% else %}
+                <div class="text-center py-5">
+                    <i class="bi bi-inbox display-4 text-muted"></i>
+                    <p class="text-muted mt-3">No quiz attempts yet.</p>
+                    <a href="{{ url_for('student_quizzes') }}" class="btn btn-primary">Start Your First Quiz</a>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

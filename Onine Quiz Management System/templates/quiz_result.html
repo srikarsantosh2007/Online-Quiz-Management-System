@@ -1,0 +1,117 @@
+{% extends "base.html" %}
+
+{% block title %}Quiz Result - Quiz Management System{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-12">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{{ url_for('student_dashboard') }}">Dashboard</a></li>
+                <li class="breadcrumb-item"><a href="{{ url_for('student_attempts') }}">Quiz History</a></li>
+                <li class="breadcrumb-item active">Quiz Result</li>
+            </ol>
+        </nav>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-header">
+                <h4><i class="bi bi-bar-chart"></i> Quiz Result - {{ quiz.title }}</h4>
+            </div>
+            <div class="card-body">
+                <div class="row mb-4">
+                    <div class="col-md-6">
+                        <div class="card bg-light">
+                            <div class="card-body text-center">
+                                <h5>Your Score</h5>
+                                {% set percentage = (attempt.score / quiz.total_marks * 100) if quiz.total_marks else 0 %}
+                                <div class="score-ring" data-percent="{{ '%.1f'|format(percentage) }}">
+                                    <svg viewBox="0 0 160 160">
+                                        <defs>
+                                            <linearGradient id="gGood" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#0ab87a"/><stop offset="1" stop-color="#64d2ff"/></linearGradient>
+                                            <linearGradient id="gMid"  x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ffd60a"/><stop offset="1" stop-color="#ff9f0a"/></linearGradient>
+                                            <linearGradient id="gBad"  x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ff9f0a"/><stop offset="1" stop-color="#ff375f"/></linearGradient>
+                                        </defs>
+                                        <circle class="track" cx="80" cy="80" r="72"/>
+                                        <circle class="bar" cx="80" cy="80" r="72"/>
+                                    </svg>
+                                    <div class="center"><b data-pct-num>{{ "%.0f"|format(percentage) }}%</b><span>{{ attempt.score }}/{{ quiz.total_marks }} marks</span></div>
+                                </div>
+                                <p class="text-muted mb-0">
+                                    {% if percentage >= 70 %}Outstanding work! &#127881;{% elif percentage >= 50 %}Good effort &mdash; keep practising!{% else %}Don't give up &mdash; try again!{% endif %}
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="card bg-light">
+                            <div class="card-body">
+                                <p><strong>Quiz:</strong> {{ quiz.title }}</p>
+                                <p><strong>Date:</strong> {{ attempt.attempt_date.strftime('%Y-%m-%d %H:%M:%S') }}</p>
+                                <p><strong>Total Questions:</strong> {{ results|length }}</p>
+                                <p><strong>Correct Answers:</strong> {{ results|selectattr('is_correct')|list|length }}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <h5>Detailed Results</h5>
+                <div class="table-responsive">
+                    <table class="table table-striped table-hover">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Question</th>
+                                <th>Your Answer</th>
+                                <th>Correct Answer</th>
+                                <th>Marks</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for result in results %}
+                            <tr class="{% if result.is_correct %}table-success{% else %}table-danger{% endif %}">
+                                <td>{{ loop.index }}</td>
+                                <td>{{ result.question.question }}</td>
+                                <td>
+                                    {% if result.student_answer %}
+                                        {{ result.student_answer }}. 
+                                        {% if result.student_answer == 'A' %}{{ result.question.option_a }}
+                                        {% elif result.student_answer == 'B' %}{{ result.question.option_b }}
+                                        {% elif result.student_answer == 'C' %}{{ result.question.option_c }}
+                                        {% elif result.student_answer == 'D' %}{{ result.question.option_d }}
+                                        {% endif %}
+                                    {% else %}
+                                        <em class="text-muted">Not answered</em>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {{ result.question.correct_answer }}. 
+                                    {% if result.question.correct_answer == 'A' %}{{ result.question.option_a }}
+                                    {% elif result.question.correct_answer == 'B' %}{{ result.question.option_b }}
+                                    {% elif result.question.correct_answer == 'C' %}{{ result.question.option_c }}
+                                    {% elif result.question.correct_answer == 'D' %}{{ result.question.option_d }}
+                                    {% endif %}
+                                </td>
+                                <td>{{ result.marks_obtained }}/{{ result.question.marks }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="mt-4">
+                    <a href="{{ url_for('student_attempts') }}" class="btn btn-primary">
+                        <i class="bi bi-arrow-left"></i> Back to Quiz History
+                    </a>
+                    <a href="{{ url_for('student_quizzes') }}" class="btn btn-secondary">
+                        <i class="bi bi-clipboard-data"></i> Browse More Quizzes
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

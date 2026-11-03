@@ -1,0 +1,152 @@
+{% extends "base.html" %}
+
+{% block title %}Take Quiz - Quiz Management System{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-12">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{{ url_for('student_dashboard') }}">Dashboard</a></li>
+                <li class="breadcrumb-item"><a href="{{ url_for('student_quizzes') }}">Quizzes</a></li>
+                <li class="breadcrumb-item active">{{ quiz.title }}</li>
+            </ol>
+        </nav>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <div>
+                    <h4 class="mb-0"><i class="bi bi-pencil-square"></i> {{ quiz.title }}</h4>
+                    <small class="text-white opacity-75">{{ quiz.description }}</small>
+                </div>
+                <div>
+                    <span class="badge bg-white text-primary me-2">
+                        <i class="bi bi-clock"></i> {{ quiz.duration }} min
+                    </span>
+                    <span class="badge bg-white text-primary">
+                        <i class="bi bi-star"></i> {{ quiz.total_marks }} marks
+                    </span>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="alert alert-info d-flex align-items-center">
+                    <i class="bi bi-info-circle fs-4 me-3"></i>
+                    <div>
+                        <strong>Quiz Instructions:</strong> Answer all questions carefully. Once submitted, you cannot change your answers.
+                    </div>
+                </div>
+                
+                <div class="quiz-hud" id="quizHud">
+                    <div class="timer" id="quizTimer"><i class="bi bi-stopwatch-fill"></i> <span id="timerText">--:--</span></div>
+                    <div class="hud-progress">
+                        <div class="hud-label"><span>Progress</span><span id="progressText">0 / {{ questions|length }} answered</span></div>
+                        <div class="progress"><div class="progress-bar" id="progressBar" style="width:0%"></div></div>
+                    </div>
+                </div>
+
+                <form method="POST" action="{{ url_for('submit_quiz', quiz_id=quiz.id) }}" id="quizForm">
+                    {% for question in questions %}
+                    <div class="card question-card mb-4 border-2" style="border-color: #667eea;">
+                        <div class="card-header" style="background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <strong><i class="bi bi-question-circle"></i> Question {{ loop.index }}</strong>
+                                <span class="badge bg-primary">{{ question.marks }} marks</span>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <p class="fs-5 mb-4">{{ question.question }}</p>
+                            <div class="list-group">
+                                <label class="list-group-item list-group-item-action d-flex align-items-center gap-3 p-3 option-label" data-value="A">
+                                    <input class="form-check-input fs-5" type="radio" name="question_{{ question.id }}" value="A" required>
+                                    <span class="fs-5 fw-bold text-primary me-2">A.</span>
+                                    <span class="fs-5">{{ question.option_a }}</span>
+                                </label>
+                                <label class="list-group-item list-group-item-action d-flex align-items-center gap-3 p-3 option-label" data-value="B">
+                                    <input class="form-check-input fs-5" type="radio" name="question_{{ question.id }}" value="B">
+                                    <span class="fs-5 fw-bold text-primary me-2">B.</span>
+                                    <span class="fs-5">{{ question.option_b }}</span>
+                                </label>
+                                <label class="list-group-item list-group-item-action d-flex align-items-center gap-3 p-3 option-label" data-value="C">
+                                    <input class="form-check-input fs-5" type="radio" name="question_{{ question.id }}" value="C">
+                                    <span class="fs-5 fw-bold text-primary me-2">C.</span>
+                                    <span class="fs-5">{{ question.option_c }}</span>
+                                </label>
+                                <label class="list-group-item list-group-item-action d-flex align-items-center gap-3 p-3 option-label" data-value="D">
+                                    <input class="form-check-input fs-5" type="radio" name="question_{{ question.id }}" value="D">
+                                    <span class="fs-5 fw-bold text-primary me-2">D.</span>
+                                    <span class="fs-5">{{ question.option_d }}</span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                    
+                    <div class="alert alert-warning d-flex align-items-center">
+                        <i class="bi bi-exclamation-triangle fs-4 me-3"></i>
+                        <div>
+                            <strong>Warning:</strong> Make sure you have answered all questions before submitting. You cannot change your answers after submission.
+                        </div>
+                    </div>
+                    
+                    <div class="d-flex gap-3 justify-content-center">
+                        <button type="submit" class="btn btn-success btn-lg px-5">
+                            <i class="bi bi-check-circle"></i> Submit Quiz
+                        </button>
+                        <a href="{{ url_for('student_quizzes') }}" class="btn btn-secondary btn-lg px-5">
+                            <i class="bi bi-x-circle"></i> Cancel
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+(function () {
+    var form = document.getElementById('quizForm');
+    var total = {{ questions|length }};
+    var bar = document.getElementById('progressBar'), txt = document.getElementById('progressText');
+
+    /* live progress */
+    function update() {
+        var names = {};
+        form.querySelectorAll('input[type=radio]:checked').forEach(function (r) { names[r.name] = 1; });
+        var n = Object.keys(names).length;
+        bar.style.width = (total ? n / total * 100 : 0) + '%';
+        txt.textContent = n + ' / ' + total + ' answered';
+    }
+    form.addEventListener('change', update);
+    update();
+
+    /* countdown timer (survives page refresh) */
+    var key = 'qms-quiz-end-{{ quiz.id }}', end = null;
+    try { end = parseInt(sessionStorage.getItem(key), 10) || null; } catch (e) {}
+    if (!end || end < Date.now()) {
+        end = Date.now() + {{ quiz.duration }} * 60 * 1000;
+        try { sessionStorage.setItem(key, end); } catch (e) {}
+    }
+    var box = document.getElementById('quizTimer'), t = document.getElementById('timerText'), done = false;
+    function tick() {
+        var left = Math.max(0, Math.round((end - Date.now()) / 1000));
+        var m = Math.floor(left / 60), s = left % 60;
+        t.textContent = (m < 10 ? '0' : '') + m + ':' + (s < 10 ? '0' : '') + s;
+        box.classList.toggle('warn', left <= 120 && left > 30);
+        box.classList.toggle('crit', left <= 30);
+        if (left === 0 && !done) {          /* time is up: submit whatever is answered */
+            done = true;
+            form.querySelectorAll('[required]').forEach(function (i) { i.required = false; });
+            form.submit();
+        }
+    }
+    tick(); setInterval(tick, 1000);
+    form.addEventListener('submit', function () { try { sessionStorage.removeItem(key); } catch (e) {} });
+})();
+</script>
+{% endblock %}

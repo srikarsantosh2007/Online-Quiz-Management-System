@@ -1,0 +1,94 @@
+{% extends "base.html" %}
+
+{% block title %}Home - Quiz Management System{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-12">
+        <div class="hero mb-4">
+            <span class="orb o1"></span><span class="orb o2"></span><span class="orb o3"></span>
+            <span class="hero-pill"><span class="dot"></span> Smart quizzes &middot; Instant results</span>
+            <h1 class="display-4">Welcome to Online Quiz Management System</h1>
+            <p class="lead">A comprehensive platform for creating and taking online quizzes</p>
+            <hr class="my-4">
+            <p>Administrators can create quizzes and manage students, while students can take quizzes and view their results instantly.</p>
+            <div class="mt-4 d-flex flex-wrap gap-3">
+                {% if not session.get('admin_id') and not session.get('student_id') %}
+                <a class="btn btn-light btn-lg" href="{{ url_for('admin_login') }}" role="button"><i class="bi bi-shield-lock-fill"></i> Admin Login</a>
+                <a class="btn btn-outline-light btn-lg" href="{{ url_for('student_login') }}" role="button"><i class="bi bi-mortarboard-fill"></i> Student Login</a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="stat-strip mb-4">
+    <div class="stat"><div class="num"><i class="bi bi-lightning-charge-fill"></i></div><div class="text-muted fw-semibold">Instant Results</div></div>
+    <div class="stat"><div class="num"><i class="bi bi-stopwatch-fill"></i></div><div class="text-muted fw-semibold">Timed Quizzes</div></div>
+    <div class="stat"><div class="num"><i class="bi bi-bar-chart-fill"></i></div><div class="text-muted fw-semibold">Smart Reports</div></div>
+    <div class="stat"><div class="num"><i class="bi bi-shield-check"></i></div><div class="text-muted fw-semibold">Secure Login</div></div>
+</div>
+
+<div class="row">
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-body text-center">
+                <i class="bi bi-person-badge display-1 text-primary mb-3"></i>
+                <h5 class="card-title">For Administrators</h5>
+                <p class="card-text">Create quizzes, manage questions, assign quizzes to students, and view detailed reports.</p>
+                <a href="{{ url_for('admin_login') }}" class="btn btn-primary">Admin Login</a>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-body text-center">
+                <i class="bi bi-person-check display-1 text-success mb-3"></i>
+                <h5 class="card-title">For Students</h5>
+                <p class="card-text">Register, take available quizzes, view your scores, and track your progress over time.</p>
+                <a href="{{ url_for('student_login') }}" class="btn btn-success">Student Login</a>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-body text-center">
+                <i class="bi bi-clipboard-data display-1 text-info mb-3"></i>
+                <h5 class="card-title">Instant Results</h5>
+                <p class="card-text">Get immediate feedback on your quiz performance with detailed score breakdowns.</p>
+                <a href="{{ url_for('about') }}" class="btn btn-info">Learn More</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-4">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-header">
+                Features
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <ul class="list-unstyled feature-list">
+                            <li><i class="bi bi-check-circle text-success"></i> Multiple Choice Questions (MCQ)</li>
+                            <li><i class="bi bi-check-circle text-success"></i> Real-time scoring</li>
+                            <li><i class="bi bi-check-circle text-success"></i> Detailed performance reports</li>
+                            <li><i class="bi bi-check-circle text-success"></i> Quiz history tracking</li>
+                        </ul>
+                    </div>
+                    <div class="col-md-6">
+                        <ul class="list-unstyled feature-list">
+                            <li><i class="bi bi-check-circle text-success"></i> Secure authentication</li>
+                            <li><i class="bi bi-check-circle text-success"></i> Responsive design</li>
+                            <li><i class="bi bi-check-circle text-success"></i> Easy quiz management</li>
+                            <li><i class="bi bi-check-circle text-success"></i> Search and pagination</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

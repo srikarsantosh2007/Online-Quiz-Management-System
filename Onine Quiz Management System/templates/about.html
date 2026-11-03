@@ -1,0 +1,89 @@
+{% extends "base.html" %}
+
+{% block title %}About - Quiz Management System{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-header">
+                <h2>About Online Quiz Management System</h2>
+            </div>
+            <div class="card-body">
+                <h4>Overview</h4>
+                <p>The Online Quiz Management System is a web-based application designed to facilitate the creation, management, and administration of online quizzes. It provides a user-friendly interface for both administrators and students.</p>
+                
+                <h4 class="mt-4">For Administrators</h4>
+                <ul>
+                    <li>Create and manage quizzes with multiple choice questions</li>
+                    <li>Add, edit, and delete questions</li>
+                    <li>Manage student accounts</li>
+                    <li>Assign quizzes to students</li>
+                    <li>View detailed reports and analytics</li>
+                    <li>Track student performance over time</li>
+                </ul>
+                
+                <h4 class="mt-4">For Students</h4>
+                <ul>
+                    <li>Register and create personal accounts</li>
+                    <li>View available quizzes</li>
+                    <li>Take quizzes with timed sessions</li>
+                    <li>Receive instant results and feedback</li>
+                    <li>View quiz history and previous attempts</li>
+                    <li>Update personal profile information</li>
+                </ul>
+                
+                <h4 class="mt-4">Technology Stack</h4>
+                <div class="row">
+                    <div class="col-md-6">
+                        <strong>Backend:</strong>
+                        <ul>
+                            <li>Python 3</li>
+                            <li>Flask Framework</li>
+                            <li>SQLite Database</li>
+                            <li>SQLAlchemy ORM</li>
+                        </ul>
+                    </div>
+                    <div class="col-md-6">
+                        <strong>Frontend:</strong>
+                        <ul>
+                            <li>HTML5</li>
+                            <li>CSS3</li>
+                            <li>Bootstrap 5</li>
+                            <li>Jinja2 Templating</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <h4 class="mt-4">Features</h4>
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="card bg-light mb-3">
+                            <div class="card-body">
+                                <h5 class="card-title">Secure Authentication</h5>
+                                <p class="card-text">Password hashing and session management for secure access.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card bg-light mb-3">
+                            <div class="card-body">
+                                <h5 class="card-title">Real-time Scoring</h5>
+                                <p class="card-text">Instant feedback and score calculation upon quiz submission.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card bg-light mb-3">
+                            <div class="card-body">
+                                <h5 class="card-title">Responsive Design</h5>
+                                <p class="card-text">Mobile-friendly interface accessible from any device.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
